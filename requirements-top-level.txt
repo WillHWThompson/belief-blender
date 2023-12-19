@@ -1,4 +1,5 @@
 bertopic==0.16.0
+ipython==8.12.3
 Manifold==0.2.0
 pip==23.3.1
 setuptools==68.2.2
