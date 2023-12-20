@@ -85,3 +85,4 @@ def scrape_market_text(market_id_list):
             print("market not found")
             continue
         market_data.append(market_dict)
+        return market_data
