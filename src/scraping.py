@@ -66,7 +66,6 @@ def scrape_market_text(market_id_list):
     """
     market_data = []
     for market_id_i in tqdm(market_id_list):
-        print(market_id_i)
         try:
             my_market = mp.api.get_market(market_id_i)
         except Exception as e:
@@ -74,15 +73,18 @@ def scrape_market_text(market_id_list):
             continue
         market_dict = {}
         market_dict['id'] = market_id_i
+        market_dict['slug'] = my_market.slug
+        
         market_dict['creatorId'] = my_market.creatorId
         market_dict['createdTime'] = my_market.createdTime
         market_dict['question'] = my_market.question
         market_dict['tags'] = my_market.tags
         market_dict['totalLiquidity'] = my_market.totalLiquidity
+        print(my_market.slug)
         try:
             market_dict['text'] = market_text_representation(my_market)
         except:
             print("market not found")
             continue
         market_data.append(market_dict)
-        return market_data
+    return market_data
