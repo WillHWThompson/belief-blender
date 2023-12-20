@@ -1,6 +1,8 @@
 import manifoldpy
 from datetime import datetime
 from collections.abc import Iterable
+from tqdm import tqdm
+import manifoldpy as mp
 
 
 def _text_date(timestamp):
@@ -21,7 +23,7 @@ def comment_text_representation(comment):
     return representation
 
 
-def market_text_representation(marketSlug):
+def market_text_representation(market):
     """Construct text representation of a market from its slug.
     
     Parameters
@@ -35,7 +37,7 @@ def market_text_representation(marketSlug):
         The text representation of the market.
     """
     # get market from slug
-    market = manifoldpy.api.get_slug(marketSlug)
+    marketSlug = market.slug
     # get comments by market creator
     comment_data = manifoldpy.api.get_comments(marketSlug=marketSlug)
     comments = [c for c in comment_data if c.userId == market.creatorId]
@@ -49,3 +51,37 @@ def market_text_representation(marketSlug):
         "------------------------------------------------------\n" + \
         "---\n".join([comment_text_representation(c) for c in comments])
     return representation
+
+
+
+def scrape_market_text(market_id_list):
+    """
+    Scrapes market data for a given list of market IDs.
+
+    Args:
+        market_id_list (list): A list of market IDs to scrape.
+
+    Returns:
+        list: A list of dictionaries containing the scraped market data.
+    """
+    market_data = []
+    for market_id_i in tqdm(market_id_list):
+        print(market_id_i)
+        try:
+            my_market = mp.api.get_market(market_id_i)
+        except Exception as e:
+            print(e)
+            continue
+        market_dict = {}
+        market_dict['id'] = market_id_i
+        market_dict['creatorId'] = my_market.creatorId
+        market_dict['createdTime'] = my_market.createdTime
+        market_dict['question'] = my_market.question
+        market_dict['tags'] = my_market.tags
+        market_dict['totalLiquidity'] = my_market.totalLiquidity
+        try:
+            market_dict['text'] = market_text_representation(my_market)
+        except:
+            print("market not found")
+            continue
+        market_data.append(market_dict)
