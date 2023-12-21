@@ -39,14 +39,14 @@ def create_temporal_network(trajectory, timestamps, topic_to_pos):
     """
 
     #make colormap for edges
-    norm = mpl.colors.Normalize(vmin=min(trajectory.index), vmax=max(trajectory.index))
+    norm = mpl.colors.Normalize(vmin=min(timestamps), vmax=max(timestamps))
     cmap = cm.viridis
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
-    edge_colours = m.to_rgba(trajectory.index)
+    edge_colours = m.to_rgba(timestamps)
     
     G = nx.MultiDiGraph()
     for topic in np.unique(trajectory):
-        G.add_node(topic, position = topic_to_position[topic])
+        G.add_node(topic, position = topic_to_pos[topic])
 
     for i, (u, v) in enumerate(itertools.pairwise(trajectory)):
         G.add_edge(u, v, colour = edge_colours[i + 1])
