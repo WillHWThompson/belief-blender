@@ -17,5 +17,7 @@ for path in tqdm(file_list):
        df = pd.read_json(f)
        df_list.append(df)
 df_mega = pd.concat(df_list)
+df_mega = df_mega.reset_index()
+##
 df_mega.to_json("data/combined_bets.json")
        #market_ids.update(set(df.contractId.unique()))
